@@ -1,0 +1,25 @@
+name: main
+
+on: [push]
+
+jobs:
+  build-electron:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - run: yarn install
+      - run: rm -rf build
+        shell: bash
+      - run: yarn build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.os }}
+          path: build
