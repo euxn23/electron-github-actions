@@ -4,11 +4,15 @@ on: [push]
 
 jobs:
   build-electron:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os.imageName }}
 
     strategy:
       matrix:
-        os: [macOS-latest, windows-latest, ubuntu-latest]
+        os:
+          - name: windows
+            imageName: windows-latest
+          - name: linux
+            imageName: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
@@ -18,8 +22,8 @@ jobs:
       - run: yarn install
       - run: rm -rf build
         shell: bash
-      - run: yarn build
+      - run: yarn build:${{ matrix.os.name }}
       - uses: actions/upload-artifact@v1
         with:
-          name: ${{ matrix.os }}
+          name: ${{ matrix.os.name }}
           path: build
